@@ -6,7 +6,7 @@ from torch.optim.lr_scheduler import MultiStepLR
 import numpy as np
 import random
 
-from model import CLIPVAD
+from model import ClipFusionVAD
 from xd_test import test
 from utils.dataset import XDDataset
 from utils.tools import get_prompt_text, get_batch_label
@@ -141,6 +141,6 @@ if __name__ == '__main__':
     test_dataset = XDDataset(args.visual_length, args.test_list, True, label_map)
     test_loader = DataLoader(test_dataset, batch_size=1, shuffle=False)
 
-    model = CLIPVAD(args.classes_num, args.embed_dim, args.visual_length, args.visual_width, args.visual_head,
+    model = ClipFusionVAD(args.classes_num, args.embed_dim, args.visual_length, args.visual_width, args.visual_head,
                     args.visual_layers, args.attn_window, args.prompt_prefix, args.prompt_postfix, device)
     train(model, train_loader, test_loader, args, label_map, device)
