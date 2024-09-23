@@ -100,7 +100,7 @@ if __name__ == '__main__':
     gtsegments = np.load(args.gt_segment_path, allow_pickle=True)
     gtlabels = np.load(args.gt_label_path, allow_pickle=True)
 
-    model = CLIPVAD(args.classes_num, args.embed_dim, args.visual_length, args.visual_width, args.visual_head, args.visual_layers, args.attn_window, args.prompt_prefix, args.prompt_postfix, device)
+    model = ClipFusionVAD(args.classes_num, args.embed_dim, args.visual_length, args.visual_width, args.visual_head, args.visual_layers, args.attn_window, args.prompt_prefix, args.prompt_postfix, device)
     model_param = torch.load(args.model_path)
     model.load_state_dict(model_param)
 
