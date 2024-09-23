@@ -7,13 +7,6 @@ from clip import clip
 from utils.layers import GraphConvolution, DistanceAdj
 
 
-class LayerNorm(nn.LayerNorm):
-    def forward(self, x: torch.Tensor):
-        orig_type = x.dtype
-        ret = super().forward(x.type(torch.float32))
-        return ret.type(orig_type)
-
-
 class QuickGELU(nn.Module):
     def forward(self, x: torch.Tensor):
         return x * torch.sigmoid(1.702 * x)
@@ -44,7 +37,11 @@ class ResidualAttentionBlock(nn.Module):
         x = x + self.mlp(self.ln_2(x))
         return (x, padding_mask)
 
-
+class LayerNorm(nn.LayerNorm):
+    def forward(self, x: torch.Tensor):
+        orig_type = x.dtype
+        ret = super().forward(x.type(torch.float32))
+        return ret.type(orig_type)
 class Transformer(nn.Module):
     def __init__(self, width: int, layers: int, heads: int, attn_mask: torch.Tensor = None):
         super().__init__()
@@ -229,17 +226,17 @@ class ClipFusionVAD(nn.Module):
             text_embeddings[i, self.prompt_prefix + ind + self.prompt_postfix] = word_embedding[i, ind]
             text_tokens[i, self.prompt_prefix + ind + self.prompt_postfix] = word_tokens[i, ind]
 
-        text_features = self.clipmodel.encode_text(text_embeddings, text_tokens)
+        t_feature = self.clipmodel.encode_text(text_embeddings, text_tokens)
 
-        return text_features
+        return t_feature
 
-    def uda(self, video_feature, text_feature, train_flag):
+    def visual_a_p(self, video_feature, t_feature, train_flag):
         v_fea = self.head_video(video_feature)
         v_fea_u = self.u_head_video(video_feature)
 
         v_fea = v_fea / v_fea.norm(dim=-1, keepdim=True)
         v_fea_u = v_fea_u / v_fea_u.norm(dim=-1, keepdim=True)
-        t_fea = text_feature / text_feature.norm(dim=-1, keepdim=True)
+        t_fea = t_feature / t_feature.norm(dim=-1, keepdim=True)
 
         if train_flag:
             v_fea_u_nograd = self.u_head_video(video_feature.detach())
@@ -252,7 +249,7 @@ class ClipFusionVAD(nn.Module):
         visual_features = self.encode_video(visual, padding_mask, lengths)
         visual_features = self.gam_attention(visual_features.permute(0, 2, 1)).permute(0, 2, 1)
 
-        video_feature, v_fea, v_fea_u, t_fea, v_fea_u_nograd, t_fea_nograd = self.uda(visual_features,
+        video_feature, v_fea, v_fea_u, t_fea, v_fea_u_nograd, t_fea_nograd = self.visual_a_p(visual_features,
                                                                                       self.encode_textprompt(text),
                                                                                       train_flag)
         logits1 = self.classifier(visual_features + self.mlp2(v_fea + v_fea_u))
