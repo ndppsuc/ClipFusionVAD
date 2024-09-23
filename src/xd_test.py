@@ -5,7 +5,7 @@ from torch.utils.data import DataLoader
 import numpy as np
 from sklearn.metrics import average_precision_score, roc_auc_score
 
-from model import CLIPVAD
+from model import ClipFusionVAD
 from utils.dataset import XDDataset
 from utils.tools import get_batch_mask, get_prompt_text
 from utils.xd_detectionMAP import getDetectionMAP as dmAP
@@ -101,7 +101,7 @@ if __name__ == '__main__':
     gtsegments = np.load(args.gt_segment_path, allow_pickle=True)
     gtlabels = np.load(args.gt_label_path, allow_pickle=True)
 
-    model = CLIPVAD(args.classes_num, args.embed_dim, args.visual_length, args.visual_width, args.visual_head,
+    model =ClipFusionVAD(args.classes_num, args.embed_dim, args.visual_length, args.visual_width, args.visual_head,
                     args.visual_layers, args.attn_window, args.prompt_prefix, args.prompt_postfix, device)
     model_param = torch.load(args.model_path)
     model.load_state_dict(model_param)
