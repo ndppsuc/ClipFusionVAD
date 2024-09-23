@@ -88,7 +88,7 @@ class GAM_Attention(nn.Module):
         return out
 
 
-class CLIPVAD(nn.Module):
+class ClipFusionVAD(nn.Module):
     def __init__(self,
                  num_class: int,
                  embed_dim: int,
