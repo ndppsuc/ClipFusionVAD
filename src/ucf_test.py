@@ -5,7 +5,7 @@ from torch.utils.data import DataLoader
 import numpy as np
 from sklearn.metrics import average_precision_score, roc_auc_score
 
-from model import CLIPVAD
+from model import ClipFusionVAD
 from utils.dataset import UCFDataset
 from utils.tools import get_batch_mask, get_prompt_text
 from utils.ucf_detectionMAP import getDetectionMAP as dmAP
