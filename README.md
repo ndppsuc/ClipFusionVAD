@@ -19,8 +19,8 @@ To address the insufficient feature representation of existing models, we propos
 
 ## Training
 We extract CLIP features for UCF-Crime and XD-Violence datasets, and release these features as follows:
-ucf-crime：
-xd-violence：
+-ucf-crime:[code:7yzp](https://pan.baidu.com/s/1OKRIxoLcxt-7RYxWpylgLQ#list/path=%2F)
+-xd-violence：
 
 - Change the file paths to the download datasets above in `list/xd_CLIP_rgb.csv` and `list/xd_CLIP_rgbtest.csv`. 
 - Feel free to change the hyperparameters in `xd_option.py`
